@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A-Road Master: UK Edition</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>A-Road Master</h1>
+    <div id="rank-display" class="subtitle">Rank: Pedestrian (0 pts)</div>
+    
+    <div class="header-nav">
+        <a href="roads.html" class="header-link">Roads Database</a>
+        <a href="numberingScheme.html" class="header-link">Zone Info</a>
+    </div>
+</header>
+
+<div class="container" id="app">
+    <div id="screen-menu" class="card">
+        <h2>Select Game Mode</h2>
+        <div style="margin-top: 30px;">
+            <button class="btn" onclick="game.start('all')">Play All Regions</button>
+            <button class="btn secondary" onclick="game.showCounties()">Select Specific Region</button>
+        </div>
+        <div style="margin-top: 20px; font-size: 0.8rem; color: #888;">
+            <span id="roads-loaded-count">0</span> roads loaded
+        </div>
+    </div>
+
+    <div id="screen-counties" class="card hidden">
+        <h2>Choose a Region</h2>
+        <button class="btn secondary" onclick="ui.showScreen('screen-menu')">Back</button>
+        <div id="county-list" class="county-grid"></div>
+    </div>
+
+    <div id="screen-game" class="card hidden">
+        <div class="road-hint" id="display-hint">A_ _ _ _</div>
+        
+        <div class="route-info">
+            <div class="info-box">
+                <div class="info-label">Start Point</div>
+                <div class="info-value" id="display-start">City</div>
+                <div class="info-county" id="display-start-county">Region</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">End Point</div>
+                <div class="info-value" id="display-end">Town</div>
+                <div class="info-county" id="display-end-county">Region</div>
+            </div>
+        </div>
+
+        <div class="feedback" id="display-feedback"></div>
+
+        <div class="input-group">
+            <input type="text" id="guess-input" placeholder="A..." autocomplete="off">
+            <button class="btn" onclick="game.submitGuess()">Guess</button>
+        </div>
+
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+            <button class="btn skip" onclick="game.skipRound()">Skip Round</button>
+            <button class="btn quit" onclick="game.endGame()">End Game</button>
+        </div>
+    </div>
+
+    <div id="screen-results" class="card hidden">
+        <h2>Game Results</h2>
+        <div class="route-info">
+            <div class="info-box">
+                <div class="info-label">Total Points</div>
+                <div class="info-value" id="res-points">0</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">Rounds</div>
+                <div class="info-value" id="res-rounds">0</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">Correct</div>
+                <div class="info-value" id="res-correct">0</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">Avg Pts</div>
+                <div class="info-value" id="res-avg">0</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">Rank</div>
+                <div class="info-value" id="res-rank">Pedestrian</div>
+            </div>
+        </div>
+
+        <h3>History</h3>
+        <div class="table-container">
+            <table id="history-table">
+                <thead>
+                    <tr>
+                        <th>Road</th>
+                        <th>Result</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Pts</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <button class="btn" onclick="ui.showScreen('screen-menu')">Play Again</button>
+        </div>
+    </div>
+</div>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UK National Road Database</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Specific overrides for the database view */
+        .db-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            column-count: 3; /* Masonry layout */
+            column-gap: 25px;
+        }
+
+        @media (max-width: 1000px) { .db-container { column-count: 2; } }
+        @media (max-width: 700px) { .db-container { column-count: 1; } }
+
+        .region-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            break-inside: avoid; /* Prevents card splitting */
+            border-top: 5px solid var(--road-green);
+        }
+
+        .region-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--road-green);
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .road-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .road-row:last-child { border-bottom: none; }
+
+        .road-id { font-weight: bold; font-size: 1rem; color: #333; }
+        .road-route { font-size: 0.85rem; color: #666; margin-left: 10px; flex: 1; }
+        
+        .badge {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+        }
+        .badge.m { background-color: var(--road-blue); }
+        .badge.a { background-color: var(--road-green); }
+    </style>
+</head>
+<body>
+
+<header>
+    <div style="position: absolute; left: 20px; top: 20px;">
+        <a href="index.html" class="header-link">&larr; Back to Game</a>
+    </div>
+    <h1>Road Database</h1>
+    <div class="subtitle">Complete List of Roads in Game</div>
+</header>
+
+<div class="db-container">
+    </div>
+
+<script src="data.js"></script>
+<script>
+    // Verify data is loaded
+    if (typeof regionData === 'undefined') {
+        document.querySelector('.db-container').innerHTML = '<p style="text-align:center; color:red;">Error: data.js not found.</p>';
+    } else {
+        const container = document.querySelector('.db-container');
+        
+        // Loop through each region in your data.js
+        Object.keys(regionData).sort().forEach(region => {
+            const card = document.createElement('div');
+            card.className = 'region-card';
+            
+            let html = `<div class="region-title">${region}</div>`;
+            
+            regionData[region].forEach(road => {
+                const type = road.Number.startsWith('M') || road.Number.includes('(M)') ? 'm' : 'a';
+                html += `
+                    <div class="road-row">
+                        <span class="road-id">${road.Number}</span>
+                        <span class="road-route">${road.Start} ↔ ${road.End}</span>
+                        <span class="badge ${type}">${type.toUpperCase()}</span>
+                    </div>
+                `;
+            });
+            
+            card.innerHTML = html;
+            container.appendChild(card);
+        });
+    }
+</script>
+
+</body>
+</html>

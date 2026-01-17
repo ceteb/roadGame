@@ -1,0 +1,202 @@
+:root {
+    --road-green: #00703C;
+    --road-white: #FFFFFF;
+    --road-yellow: #FFD200;
+    --road-blue: #00539B;
+    --road-brown: #895C3C;
+    --text-dark: #333;
+    --bg-color: #dce3e8; 
+    --box-bg: #f0f2f5;
+    --box-border: #ccd0d5;
+}
+
+body {
+    font-family: "Verdana", "Arial", sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: var(--road-green);
+    color: var(--road-white);
+    padding: 20px;
+    text-align: center;
+    border-bottom: 5px solid var(--road-white);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    position: relative; /* Needed for positioning the nav buttons */
+}
+
+h1 { margin: 0; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
+.subtitle { font-size: 0.9rem; opacity: 0.9; margin-top: 5px; }
+
+/* --- NEW HEADER BUTTONS --- */
+.header-nav {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.header-link {
+    background-color: var(--road-white);
+    color: var(--text-dark);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    border: 2px solid var(--text-dark);
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header-link:hover {
+    background-color: var(--road-yellow);
+    transform: translateY(-2px);
+    border-color: #eebb00;
+}
+
+/* --- MAIN CONTAINER --- */
+.container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 10px;
+    flex: 1;
+    width: 95%;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* --- BUTTONS --- */
+.btn {
+    background-color: var(--road-green);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 5px;
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.btn:hover { background-color: #005a30; transform: translateY(-1px); }
+.btn.secondary { background-color: #666; }
+.btn.skip { background-color: var(--road-blue); }
+.btn.quit { background-color: #a00; }
+
+.road-hint {
+    font-family: monospace;
+    font-size: 3rem;
+    letter-spacing: 8px;
+    margin: 25px 0;
+    font-weight: bold;
+    color: #222;
+}
+
+/* --- INFO BOXES --- */
+.route-info {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 25px 0;
+}
+
+.info-box {
+    background: var(--box-bg);
+    padding: 15px;
+    border-radius: 8px;
+    flex: 1;
+    min-width: 220px;
+    border: 1px solid var(--box-border);
+    border-left: 6px solid var(--road-green);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.info-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 8px; }
+.info-value { font-size: 1.4rem; font-weight: bold; color: #000; }
+.info-county { color: var(--road-green); font-size: 0.95rem; font-weight: bold; margin-top: 5px; }
+
+/* --- INPUT --- */
+.input-group { display: flex; gap: 10px; justify-content: center; margin-top: 30px; }
+
+input[type="text"] {
+    padding: 12px;
+    font-size: 1.4rem;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    width: 160px;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+input[type="text"]:focus {
+    border-color: var(--road-blue);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 83, 155, 0.2);
+}
+
+.feedback { margin: 15px 0; font-weight: bold; min-height: 24px; font-size: 1.1rem; }
+.feedback.correct { color: var(--road-green); }
+.feedback.wrong { color: #d00; }
+
+/* --- COUNTY GRID --- */
+.county-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+}
+.county-btn {
+    background: white; border: 1px solid #ddd; padding: 12px;
+    border-radius: 6px; cursor: pointer; display: flex;
+    justify-content: space-between; align-items: center;
+    transition: all 0.2s;
+}
+.county-btn:hover { 
+    background: var(--road-yellow); 
+    border-color: #eebb00; 
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.county-btn span.count { 
+    background: #f0f0f0; padding: 2px 8px; border-radius: 12px; 
+    font-size: 0.8rem; color: #555; font-weight: bold;
+}
+.county-btn:hover span.count { background: rgba(255,255,255,0.8); color: #000; }
+
+/* --- RESULTS TABLE --- */
+.table-container { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+th { background-color: var(--road-green); color: white; padding: 12px; text-align: left; }
+td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+tr:nth-child(even) { background-color: #f9f9f9; }
+
+.hidden { display: none; }
+
+/* Mobile Adjustments for Header Buttons */
+@media (max-width: 600px) {
+    .header-nav {
+        position: static;
+        justify-content: center;
+        margin-top: 15px;
+    }
+}
