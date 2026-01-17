@@ -82,9 +82,29 @@ const regionData = {
         {"Number": "A456", "Start": "Birmingham", "End": "Woofferton"},
         {"Number": "A4123", "Start": "Wolverhampton", "End": "Birmingham"},
         {"Number": "A452", "Start": "Leamington Spa", "End": "Brownhills"},
-        {"Number": "A449", "Start": "Newport", "End": "Stafford"},
+        {"Number": "A449", "Start": "Newport, WAL", "End": "Stafford"},
         {"Number": "A4041", "Start": "West Bromwich", "End": "Sutton Coldfield"},
-        {"Number": "A3400", "Start": "Hockley Heath", "End": "Chipping Norton"}
+        {"Number": "A3400", "Start": "Hockley Heath", "End": "Chipping Norton"},
+        {"Number": "A462", "Start": "Essington", "End": "Wednesbury"},
+        {"Number": "A460", "Start": "Wolverhampton", "End": "Rugeley"},
+        {"Number": "A454", "Start": "Sutton Coldfield", "End": "Bridgnorth"},
+        {"Number": "A4124", "Start": "Wolverhampton", "End": "Brownhills"},
+        {"Number": "A463", "Start": "Wombourne", "End": "Willenhall"},
+        {"Number": "A461", "Start": "Lichfield", "End": "Wollaston"},
+        {"Number": "A515", "Start": "Lichfield", "End": "Buxton"},
+        {"Number": "A518", "Start": "Uttoxeter", "End": "Telford"},
+        {"Number": "A519", "Start": "Newcastle under Lyme", "End": "Newport, ENG"},
+        {"Number": "A459", "Start": "Wolverhampton", "End": "Halesowen"},
+        {"Number": "A442", "Start": "Droitwich", "End": "Whitchurch"},
+        {"Number": "A452", "Start": "Leamington Spa", "End": "Brownhills"},
+        {"Number": "A444", "Start": "Coventry", "End": "Burton upon Trent"},
+        {"Number": "A448", "Start": "Kidderminster", "End": "Studley"},
+        {"Number": "A491", "Start": "Lydiate Ash", "End": "Wall Heath"},
+        {"Number": "A4031", "Start": "Smethwick", "End": "Walsall"},
+        {"Number": "A4041", "Start": "West Brom", "End": "Streetly"},
+        {"Number": "A4039", "Start": "Bilston", "End": "Penn"},
+
+
     ],
     "Yorkshire": [
         {"Number": "M1", "Start": "London", "End": "Leeds"},
@@ -178,6 +198,7 @@ const regionData = {
         {"Number": "A477", "Start": "St Clears", "End": "Pembroke Dock"},
         {"Number": "A48", "Start": "Gloucester", "End": "Carmarthen"},
         {"Number": "A494", "Start": "Dolgesllau", "End": "Queensferry"}
+        {"Number": "A458", "Start": "Mallwyd", "End": "Quinton"},
     ],
     "East of England": [
         {"Number": "A14", "Start": "Felixstowe", "End": "Catthorpe"},
