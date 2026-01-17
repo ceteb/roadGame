@@ -197,7 +197,7 @@ const regionData = {
         {"Number": "A5", "Start": "London", "End": "Holyhead"},
         {"Number": "A477", "Start": "St Clears", "End": "Pembroke Dock"},
         {"Number": "A48", "Start": "Gloucester", "End": "Carmarthen"},
-        {"Number": "A494", "Start": "Dolgesllau", "End": "Queensferry"}
+        {"Number": "A494", "Start": "Dolgesllau", "End": "Queensferry"},
         {"Number": "A458", "Start": "Mallwyd", "End": "Quinton"},
     ],
     "East of England": [
@@ -270,3 +270,4 @@ Object.keys(regionData).forEach(region => {
         });
     });
 });
+
