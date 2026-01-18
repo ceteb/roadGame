@@ -23,11 +23,12 @@ const game = {
     currentRoad: null,
     currentHint: [],
     totalScore: 0,
-    currentRoundPot: 1000,
-    roundStartTime: 0,
-    timerInterval: null,
+    currentRoundPot: 0,
     totalRounds: 0,
     totalCorrect: 0,
+    
+    // LEVEL PROPERTIES
+    currentLevel: 1,
     
     // MAP PROPERTIES
     map: null,
@@ -35,23 +36,24 @@ const game = {
     startMarker: null,
     endMarker: null,
 
-    ranks: [
-        { name: "Pedestrian", min: 0 },
-        { name: "Learner", min: 2000 },
-        { name: "Navigator", min: 8000 },
-        { name: "Road Legend", min: 20000 },
-        { name: "Motorway Master", min: 50000 }
-    ],
-
     init: function() {
         if (document.getElementById("roads-loaded-count")) {
             document.getElementById("roads-loaded-count").innerText = allRoads.length;
         }
         ui.renderCounties();
+        ui.updateLevelBar(0); // Initialize bar at 0
         
-        // Initialize Leaflet Map
         if (document.getElementById('game-map')) {
-            this.map = L.map('game-map').setView([54.5, -3], 5); 
+            this.map = L.map('game-map', {
+                dragging: false,
+                keyboard: false,
+                tap: false,
+                scrollWheelZoom: true,
+                doubleClickZoom: true,
+                touchZoom: true,
+                zoomControl: true
+            }).setView([54.5, -3], 5); 
+            
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
                 attribution: '&copy;OpenStreetMap, &copy;CartoDB',
                 subdomains: 'abcd',
@@ -66,30 +68,28 @@ const game = {
         this.totalScore = 0;
         this.totalRounds = 0;
         this.totalCorrect = 0;
+        this.currentLevel = 1;
         this.history = [];
         this.usedRoads.clear();
         
         let pool = [];
 
-        // 1. Select roads based on mode
         if (mode === 'all') {
             pool = [...allRoads];
         } else {
             pool = allRoads.filter(r => r.Region === region);
         }
 
-        // 2. FILTER: Remove roads where Start matches End (e.g. Ring Roads)
         this.activeRoads = pool.filter(r => r.Start !== r.End);
         
         if (this.activeRoads.length === 0) {
-            alert("No valid roads found (all filtered out)!");
+            alert("No valid roads found!");
             return;
         }
 
+        ui.updateLevelBar(0); // Reset bar
         this.nextRound();
         ui.showScreen('screen-game');
-        
-        // Fix map rendering
         setTimeout(() => { if(this.map) this.map.invalidateSize(); }, 100);
     },
 
@@ -105,16 +105,18 @@ const game = {
         this.currentRoad = available[Math.floor(Math.random() * available.length)];
         this.usedRoads.add(this.currentRoad);
         
-        this.currentRoundPot = 1000;
-        this.roundStartTime = Date.now();
-        this.startHiddenTimer();
+        const roadNum = this.currentRoad.Number.toUpperCase();
+        if (roadNum.includes("(M)") || roadNum.includes("TOLL")) {
+            this.currentRoundPot = 1500;
+        } else {
+            const digits = roadNum.replace(/[^0-9]/g, "").length;
+            this.currentRoundPot = 1000 + (digits * 250);
+        }
 
         this.currentHint = [this.currentRoad.Number[0]];
         for(let i=1; i < this.currentRoad.Number.length; i++) this.currentHint.push('_');
 
         ui.updateGameScreen(this.currentRoad, this.currentHint.join(' '));
-        
-        // Trigger Map
         this.updateMapForRoad(this.currentRoad);
     },
 
@@ -170,11 +172,6 @@ const game = {
         }
     },
 
-    startHiddenTimer: function() {
-        if (this.timerInterval) clearInterval(this.timerInterval);
-        this.timerInterval = setInterval(() => { }, 1000);
-    },
-
     submitGuess: function() {
         const input = document.getElementById("guess-input");
         const guess = input.value.trim().toUpperCase();
@@ -185,20 +182,22 @@ const game = {
         const cleanT = target.replace(/^[AM]/, '');
 
         if (guess === target || (cleanG.length > 0 && cleanG === cleanT)) {
-            clearInterval(this.timerInterval);
-            const elapsed = Math.floor((Date.now() - this.roundStartTime) / 1000);
-            const finalScore = Math.max(100, this.currentRoundPot - (elapsed * 10));
-            
+            const finalScore = Math.floor(this.currentRoundPot);
             this.totalScore += finalScore;
             this.totalCorrect++;
             this.totalRounds++;
             this.history.push({ road: this.currentRoad, result: 'Correct', points: finalScore });
             
+            // UPDATE LEVEL BAR HERE
+            ui.updateLevelBar(this.totalScore);
+            
             ui.showFeedback(`Correct! +${finalScore} pts`, 'correct');
             setTimeout(() => { input.value = ""; this.nextRound(); }, 1500);
         } else {
-            this.currentRoundPot = Math.max(100, this.currentRoundPot - 150);
-            ui.showFeedback("Wrong ❌", "wrong");
+            this.currentRoundPot = Math.floor(this.currentRoundPot * 0.8);
+            if (this.currentRoundPot < 10) this.currentRoundPot = 10;
+
+            ui.showFeedback(`Wrong ❌ (Potential: ${this.currentRoundPot} pts)`, "wrong");
             
             const isNum = /^\d/.test(guess);
             if (isNum) {
@@ -216,7 +215,6 @@ const game = {
     },
 
     skipRound: function() {
-        clearInterval(this.timerInterval);
         this.totalRounds++;
         this.history.push({ road: this.currentRoad, result: 'Skipped', points: 0 });
         ui.showFeedback(`Skipped. Answer was ${this.currentRoad.Number}`, 'wrong');
@@ -224,7 +222,6 @@ const game = {
     },
 
     endGame: function() {
-        clearInterval(this.timerInterval);
         ui.showResults();
     }
 };
@@ -238,7 +235,6 @@ const ui = {
     renderCounties: function() {
         const list = document.getElementById("county-list");
         if (!list) return;
-        
         list.innerHTML = "";
         if (typeof regionData !== 'undefined') {
             Object.keys(regionData).sort().forEach(region => {
@@ -250,6 +246,41 @@ const ui = {
             });
         }
     },
+
+    // --- NEW LEVELING SYSTEM VISUALS ---
+    updateLevelBar: function(totalPoints) {
+        let level = 1;
+        let gap = 500; // Gap from L1 to L2
+        let threshold = 0; // Total points needed for current level
+
+        // Loop to find current level
+        // Condition: Do we have enough points to fill the current gap?
+        while (totalPoints >= threshold + gap) {
+            threshold += gap;     // Add previous gap to threshold
+            gap = Math.floor(gap * 1.2); // Increase gap by 1.2x
+            level++;
+        }
+
+        game.currentLevel = level;
+
+        // Calculate progress within current level
+        // e.g. If Level 2 needs 500 total, and we have 600. 
+        // L2 threshold = 500. L3 gap = 600.
+        // Progress = (600 - 500) / 600 = 16%
+        
+        let pointsInLevel = totalPoints - threshold;
+        let percentage = Math.min(100, Math.floor((pointsInLevel / gap) * 100));
+
+        // Update DOM
+        const fill = document.getElementById("progress-fill");
+        const title = document.getElementById("level-title");
+        const text = document.getElementById("level-points");
+
+        if (fill) fill.style.width = percentage + "%";
+        if (title) title.innerText = `Level ${level}`;
+        if (text) text.innerText = `${pointsInLevel} / ${gap} to next`;
+    },
+    // -----------------------------------
 
     updateGameScreen: function(road, hint) {
         document.getElementById("display-hint").innerText = hint;
@@ -264,10 +295,6 @@ const ui = {
         const input = document.getElementById("guess-input");
         input.placeholder = road.Number[0] + "...";
         input.focus();
-        
-        const rank = [...game.ranks].reverse().find(r => game.totalScore >= r.min) || game.ranks[0];
-        const rankEl = document.getElementById("rank-display");
-        if (rankEl) rankEl.innerText = `Rank: ${rank.name} (${game.totalScore} pts)`;
     },
 
     updateHint: h => document.getElementById("display-hint").innerText = h,
@@ -290,8 +317,8 @@ const ui = {
         const avg = game.totalRounds > 0 ? (game.totalScore / game.totalRounds).toFixed(0) : 0;
         document.getElementById("res-avg").innerText = avg;
 
-        const rank = [...game.ranks].reverse().find(r => game.totalScore >= r.min) || game.ranks[0];
-        document.getElementById("res-rank").innerText = rank.name;
+        // NEW: Show Level Reached instead of Rank Name
+        document.getElementById("res-level").innerText = game.currentLevel;
 
         const tbody = document.querySelector("#history-table tbody");
         if(tbody) {

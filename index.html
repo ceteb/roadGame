@@ -13,7 +13,16 @@
 
 <header>
     <h1>A-Road Master</h1>
-    <div id="rank-display" class="subtitle">Rank: Pedestrian (0 pts)</div>
+    
+    <div class="level-container">
+        <div class="level-header">
+            <span id="level-title">Level 1</span>
+            <span id="level-points">0 / 500 pts</span>
+        </div>
+        <div class="progress-track">
+            <div id="progress-fill" class="progress-fill" style="width: 0%;"></div>
+        </div>
+    </div>
     
     <div class="header-nav">
         <a href="roads.html" class="header-link">Roads Database</a>
@@ -86,12 +95,8 @@
                 <div class="info-value" id="res-correct">0</div>
             </div>
             <div class="info-box">
-                <div class="info-label">Avg Pts</div>
-                <div class="info-value" id="res-avg">0</div>
-            </div>
-            <div class="info-box">
-                <div class="info-label">Rank</div>
-                <div class="info-value" id="res-rank">Pedestrian</div>
+                <div class="info-label">Level Reached</div>
+                <div class="info-value" id="res-level">1</div>
             </div>
         </div>
 
