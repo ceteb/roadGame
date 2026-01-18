@@ -35,6 +35,7 @@ const game = {
     mapLine: null,
     startMarker: null,
     endMarker: null,
+    timerInterval: null,
 
     init: function() {
         if (document.getElementById("roads-loaded-count")) {
@@ -188,7 +189,6 @@ const game = {
             this.totalRounds++;
             this.history.push({ road: this.currentRoad, result: 'Correct', points: finalScore });
             
-            // UPDATE LEVEL BAR HERE
             ui.updateLevelBar(this.totalScore);
             
             ui.showFeedback(`Correct! +${finalScore} pts`, 'correct');
@@ -222,9 +222,14 @@ const game = {
     },
 
     endGame: function() {
+        if(this.timerInterval) clearInterval(this.timerInterval);
         ui.showResults();
     }
 };
+
+// ------------------------------------------------------------------
+// UI LOGIC
+// ------------------------------------------------------------------
 
 const ui = {
     showScreen: id => {
@@ -247,31 +252,22 @@ const ui = {
         }
     },
 
-    // --- NEW LEVELING SYSTEM VISUALS ---
     updateLevelBar: function(totalPoints) {
         let level = 1;
-        let gap = 500; // Gap from L1 to L2
-        let threshold = 0; // Total points needed for current level
+        let gap = 500; 
+        let threshold = 0; 
 
-        // Loop to find current level
-        // Condition: Do we have enough points to fill the current gap?
         while (totalPoints >= threshold + gap) {
-            threshold += gap;     // Add previous gap to threshold
-            gap = Math.floor(gap * 1.2); // Increase gap by 1.2x
+            threshold += gap;     
+            gap = Math.floor(gap * 1.2); 
             level++;
         }
 
         game.currentLevel = level;
-
-        // Calculate progress within current level
-        // e.g. If Level 2 needs 500 total, and we have 600. 
-        // L2 threshold = 500. L3 gap = 600.
-        // Progress = (600 - 500) / 600 = 16%
         
         let pointsInLevel = totalPoints - threshold;
         let percentage = Math.min(100, Math.floor((pointsInLevel / gap) * 100));
 
-        // Update DOM
         const fill = document.getElementById("progress-fill");
         const title = document.getElementById("level-title");
         const text = document.getElementById("level-points");
@@ -280,7 +276,6 @@ const ui = {
         if (title) title.innerText = `Level ${level}`;
         if (text) text.innerText = `${pointsInLevel} / ${gap} to next`;
     },
-    // -----------------------------------
 
     updateGameScreen: function(road, hint) {
         document.getElementById("display-hint").innerText = hint;
@@ -317,7 +312,6 @@ const ui = {
         const avg = game.totalRounds > 0 ? (game.totalScore / game.totalRounds).toFixed(0) : 0;
         document.getElementById("res-avg").innerText = avg;
 
-        // NEW: Show Level Reached instead of Rank Name
         document.getElementById("res-level").innerText = game.currentLevel;
 
         const tbody = document.querySelector("#history-table tbody");
@@ -338,6 +332,10 @@ const ui = {
         this.showScreen('screen-results');
     }
 };
+
+// ------------------------------------------------------------------
+// INITIALIZATION
+// ------------------------------------------------------------------
 
 window.onload = function() {
     game.init();
