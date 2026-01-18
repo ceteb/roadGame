@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A-Road Master: UK Edition</title>
     <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
 
@@ -39,6 +42,8 @@
     <div id="screen-game" class="card hidden">
         <div class="road-hint" id="display-hint">A_ _ _ _</div>
         
+        <div id="game-map" style="height: 250px; width: 100%; border-radius: 8px; margin: 0 0 20px 0; border: 2px solid #ddd; z-index: 1;"></div>
+
         <div class="route-info">
             <div class="info-box">
                 <div class="info-label">Start Point</div>
