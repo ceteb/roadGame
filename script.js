@@ -26,11 +26,8 @@ const game = {
     currentRoundPot: 0,
     totalRounds: 0,
     totalCorrect: 0,
-    
-    // LEVEL PROPERTIES
     currentLevel: 1,
     
-    // MAP PROPERTIES
     map: null,
     mapLine: null,
     startMarker: null,
@@ -42,7 +39,7 @@ const game = {
             document.getElementById("roads-loaded-count").innerText = allRoads.length;
         }
         ui.renderCounties();
-        ui.updateLevelBar(0); // Initialize bar at 0
+        ui.updateLevelBar(0); 
         
         if (document.getElementById('game-map')) {
             this.map = L.map('game-map', {
@@ -74,7 +71,6 @@ const game = {
         this.usedRoads.clear();
         
         let pool = [];
-
         if (mode === 'all') {
             pool = [...allRoads];
         } else {
@@ -88,7 +84,12 @@ const game = {
             return;
         }
 
-        ui.updateLevelBar(0); // Reset bar
+        ui.updateLevelBar(0); 
+        
+        // Re-enable input if it was disabled previously
+        const input = document.getElementById("guess-input");
+        if(input) input.disabled = false;
+
         this.nextRound();
         ui.showScreen('screen-game');
         setTimeout(() => { if(this.map) this.map.invalidateSize(); }, 100);
@@ -98,10 +99,13 @@ const game = {
         ui.clearFeedback();
         const available = this.activeRoads.filter(r => !this.usedRoads.has(r));
         
+        // --- UPDATED: STOP AUTO ENDING ---
         if (available.length === 0) {
-            this.endGame();
+            ui.showFeedback("All roads completed! Press 'End Game' to finish.", "correct");
+            document.getElementById("guess-input").disabled = true; // Stop guessing
             return;
         }
+        // ---------------------------------
 
         this.currentRoad = available[Math.floor(Math.random() * available.length)];
         this.usedRoads.add(this.currentRoad);
@@ -222,7 +226,6 @@ const game = {
     },
 
     endGame: function() {
-        if(this.timerInterval) clearInterval(this.timerInterval);
         ui.showResults();
     }
 };
@@ -332,10 +335,6 @@ const ui = {
         this.showScreen('screen-results');
     }
 };
-
-// ------------------------------------------------------------------
-// INITIALIZATION
-// ------------------------------------------------------------------
 
 window.onload = function() {
     game.init();
